@@ -1,18 +1,17 @@
 {
-  "name": "moi",
+  "name": "jean-tshikaku-portfolio",
   "version": "1.0.0",
-  "description": "",
+  "description": "Portfolio - Jean TSHIKAKU",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "optimize-images": "node scripts/optimize-images.js",
+    "build": "npm run optimize-images",
+    "deploy": "npm run build && bash publier.sh"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
     "dotenv": "^17.4.2",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "sharp": "^0.35.3"
   }
 }

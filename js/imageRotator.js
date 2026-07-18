@@ -1,181 +1,207 @@
-// ==================== ROTATEUR D'IMAGES DE PROFIL ====================
+// js/imageRotator.js - Rotateur d'images unifié (Profil + Projets)
 const ImageRotator = (() => {
-    'use strict';
+  'use strict';
+  
+  const activeRotators = new Map();
+  
+  // Préchargement d'une image
+  const preloadImage = (url) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve({ url, element: img, loaded: true });
+      img.onerror = () => resolve({ url, loaded: false });
+      img.src = url;
+    });
+  };
+  
+  // Créer les contrôles UI (flèches, dots, compteur)
+  const createControls = (container, total, type = 'project') => {
+    // Nettoyer les anciens contrôles
+    container.querySelectorAll('.rotator-arrows, .rotator-dots, .rotator-counter').forEach(el => el.remove());
+    
+    // Flèches
+    const arrows = document.createElement('div');
+    arrows.className = 'rotator-arrows project-image-arrows';
+    arrows.innerHTML = '<button class="project-arrow prev" aria-label="Précédent">❮</button><button class="project-arrow next" aria-label="Suivant">❯</button>';
+    container.appendChild(arrows);
+    
+    // Dots (seulement si plus d'une image)
+    if (total > 1 && type === 'project') {
+      const dots = document.createElement('div');
+      dots.className = 'rotator-dots project-image-nav';
+      for (let i = 0; i < total; i++) {
+        const dot = document.createElement('span');
+        dot.className = 'project-image-dot' + (i === 0 ? ' active' : '');
+        dot.dataset.index = i;
+        dots.appendChild(dot);
+      }
+      container.appendChild(dots);
+    }
+    
+    // Compteur
+    const counter = document.createElement('div');
+    counter.className = 'rotator-counter';
+    if (type === 'profile') {
+      counter.className = 'photo-counter';
+      counter.textContent = `1/${total}`;
+    } else {
+      counter.className = 'project-image-counter';
+      counter.textContent = `1 / ${total}`;
+    }
+    container.appendChild(counter);
+    
+    return { arrows, counter };
+  };
+  
+  // Initialiser un rotateur
+  const init = async (element, config) => {
+    if (!element || !config) return;
+    
+    // Nettoyer un rotateur existant sur cet élément
+    if (activeRotators.has(element)) {
+      const old = activeRotators.get(element);
+      if (old.stop) old.stop();
+      activeRotators.delete(element);
+    }
+    
+    const { category, prefix, count, type = 'project', interval = 4000 } = config;
+    const container = type === 'profile' ? element.parentElement : element.closest('.project-image-container');
+    if (!container) return;
+    
+    // Détecter les images disponibles
+    const images = await ImageHelper.detectImages(category, prefix, count || 25);
+    if (images.length === 0) {
+      console.log(`ℹ️ Aucune image trouvée pour ${prefix}`);
+      return;
+    }
+    
+    // Précharger toutes les images
+    const loaded = [];
+    for (const img of images) {
+      const result = await preloadImage(img.url);
+      if (result.loaded) loaded.push(result);
+    }
+    if (loaded.length === 0) return;
+    
+    // Masquer l'emoji fallback si présent
+    const emoji = element.querySelector('.project-emoji') || element.querySelector('.profile-fallback-icon');
+    if (emoji) {
+      if (type === 'profile') {
+        emoji.style.display = 'none';
+      } else {
+        emoji.style.display = 'none';
+      }
+    }
+    
+    // Créer les contrôles
+    const { arrows, counter } = createControls(container, loaded.length, type);
     
     let currentIndex = 0;
-    let rotationInterval = null;
-    let imageCache = new Map();
-    let isTransitioning = false;
+    let timer = null;
+    let locked = false;
     
-    // Préchargement des images
-    const preloadImages = async (config) => {
-        const { folder, prefix, extension, count } = config;
-        const loadPromises = [];
-        
-        for (let i = 1; i <= count; i++) {
-            const imagePath = `${folder}/${prefix}${i}.${extension}`;
-            
-            const promise = new Promise((resolve, reject) => {
-                const img = new Image();
-                
-                img.onload = () => {
-                    imageCache.set(i, img);
-                    resolve({ index: i, loaded: true });
-                };
-                
-                img.onerror = () => {
-                    console.warn(`Failed to load image: ${imagePath}`);
-                    // Fallback : utiliser un emoji ou une couleur de fond
-                    resolve({ index: i, loaded: false, error: true });
-                };
-                
-                // Ajout d'un timestamp pour éviter le cache navigateur
-                img.src = `${imagePath}?t=${Date.now()}`;
-            });
-            
-            loadPromises.push(promise);
-        }
-        
-        try {
-            const results = await Promise.allSettled(loadPromises);
-            const loadedCount = results.filter(r => 
-                r.status === 'fulfilled' && r.value.loaded
-            ).length;
-            
-            console.log(`✅ ${loadedCount}/${count} images loaded successfully`);
-            return loadedCount;
-        } catch (error) {
-            console.error('Image preloading failed:', error);
-            return 0;
-        }
-    };
-    
-    // Changement d'image avec animation
-    const changeImage = (element, config) => {
-        if (isTransitioning || imageCache.size === 0) return;
-        
-        isTransitioning = true;
-        currentIndex = (currentIndex % config.count) + 1;
-        
-        // Appliquer l'animation de sortie
+    // Afficher une image
+    const showImage = (index) => {
+      if (locked || index === currentIndex || loaded.length === 0) return;
+      locked = true;
+      
+      if (type === 'profile') {
         element.classList.add('changing');
+      } else {
+        element.classList.add('changing');
+      }
+      
+      setTimeout(() => {
+        currentIndex = index;
+        const imgUrl = loaded[currentIndex].url;
         
-        setTimeout(() => {
-            // Changer l'image
-            const cachedImage = imageCache.get(currentIndex);
-            if (cachedImage && cachedImage.complete) {
-                element.style.backgroundImage = `url(${cachedImage.src})`;
-                element.style.backgroundSize = 'cover';
-                element.style.backgroundPosition = 'center';
-                element.style.backgroundRepeat = 'no-repeat';
-                
-                // Enlever l'emoji si présent
-                element.textContent = '';
-                
-                // Mettre à jour le compteur
-                const counter = element.parentElement.querySelector('.photo-counter');
-                if (counter) {
-                    counter.textContent = `${currentIndex}/${config.count}`;
-                }
-            }
-            
-            // Animation d'entrée
-            element.classList.remove('changing');
-            
-            setTimeout(() => {
-                isTransitioning = false;
-            }, 800);
-        }, 400);
-    };
-    
-    // Démarrage de la rotation
-    const startRotation = (element, config) => {
-        if (!element || !config || rotationInterval) return;
+        // Appliquer l'image en background
+        element.style.backgroundImage = `url('${imgUrl}')`;
+        element.style.backgroundSize = 'cover';
+        element.style.backgroundPosition = 'center';
+        element.style.backgroundRepeat = 'no-repeat';
         
-        // Appliquer la première image si disponible
-        const firstImage = imageCache.get(1);
-        if (firstImage && firstImage.complete) {
-            element.style.backgroundImage = `url(${firstImage.src})`;
-            element.style.backgroundSize = 'cover';
-            element.style.backgroundPosition = 'center';
-            element.style.backgroundRepeat = 'no-repeat';
-            element.textContent = '';
-            currentIndex = 1;
+        // Mettre à jour les dots
+        const dots = container.querySelectorAll('.project-image-dot');
+        dots.forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
+        
+        // Mettre à jour le compteur
+        if (counter) {
+          counter.textContent = type === 'profile' 
+            ? `${currentIndex + 1}/${loaded.length}` 
+            : `${currentIndex + 1} / ${loaded.length}`;
         }
         
-        // Ajouter le compteur s'il n'existe pas déjà
-        if (!element.parentElement.querySelector('.photo-counter')) {
-            const counter = document.createElement('div');
-            counter.className = 'photo-counter';
-            counter.textContent = `1/${config.count}`;
-            element.parentElement.appendChild(counter);
-        }
-        
-        // Démarrer l'intervalle de rotation
-        rotationInterval = setInterval(() => {
-            changeImage(element, config);
-        }, config.changeInterval || 3000);
-        
-        console.log('🔄 Image rotation started');
+        element.classList.remove('changing');
+        setTimeout(() => { locked = false; }, 800);
+      }, 400);
     };
     
-    // Arrêt de la rotation
-    const stopRotation = () => {
-        if (rotationInterval) {
-            clearInterval(rotationInterval);
-            rotationInterval = null;
-        }
-    };
+    const next = () => showImage((currentIndex + 1) % loaded.length);
+    const prev = () => showImage((currentIndex - 1 + loaded.length) % loaded.length);
+    const startTimer = () => { stopTimer(); if (loaded.length > 1) timer = setInterval(next, interval); };
+    const stopTimer = () => { if (timer) { clearInterval(timer); timer = null; } };
     
-    // Initialisation
-    const init = async (config) => {
-        const profileImage = document.querySelector('.profile-image');
-        if (!profileImage || !config) {
-            console.warn('Profile image element or config not found');
-            return;
-        }
-        
-        // Arrêter toute rotation existante
-        stopRotation();
-        
-        // Précharger les images
-        const loadedCount = await preloadImages(config);
-        
-        if (loadedCount > 0) {
-            // Démarrer la rotation
-            startRotation(profileImage, config);
-            
-            // Pause au survol
-            profileImage.parentElement.addEventListener('mouseenter', () => {
-                stopRotation();
-            });
-            
-            profileImage.parentElement.addEventListener('mouseleave', () => {
-                startRotation(profileImage, config);
-            });
-            
-            // Navigation manuelle au clic
-            profileImage.parentElement.addEventListener('click', (e) => {
-                e.preventDefault();
-                stopRotation();
-                changeImage(profileImage, config);
-                startRotation(profileImage, config);
-            });
-        } else {
-            console.warn('No images loaded, keeping default avatar');
-        }
-    };
+    // Événements des flèches
+    const prevBtn = arrows.querySelector('.prev');
+    const nextBtn = arrows.querySelector('.next');
+    if (prevBtn) prevBtn.addEventListener('click', (e) => { e.stopPropagation(); stopTimer(); prev(); startTimer(); });
+    if (nextBtn) nextBtn.addEventListener('click', (e) => { e.stopPropagation(); stopTimer(); next(); startTimer(); });
     
-    // Nettoyage
-    const cleanup = () => {
-        stopRotation();
-        imageCache.clear();
-        currentIndex = 0;
-    };
+    // Clic sur les dots
+    container.addEventListener('click', (e) => {
+      const dot = e.target.closest('.project-image-dot');
+      if (dot) {
+        e.stopPropagation();
+        const index = parseInt(dot.dataset.index);
+        if (!isNaN(index)) { stopTimer(); showImage(index); startTimer(); }
+      }
+    });
     
-    return {
-        init,
-        stop: stopRotation,
-        cleanup
-    };
+    // Clic sur l'image pour changer (mode profil)
+    if (type === 'profile') {
+      element.addEventListener('click', (e) => {
+        e.preventDefault();
+        stopTimer();
+        next();
+        startTimer();
+      });
+    }
+    
+    // Pause au survol
+    const hoverTarget = type === 'profile' ? container : element.closest('.project-card') || container;
+    if (hoverTarget) {
+      hoverTarget.addEventListener('mouseenter', stopTimer);
+      hoverTarget.addEventListener('mouseleave', startTimer);
+    }
+    
+    // Touch/swipe
+    let touchStart = 0;
+    container.addEventListener('touchstart', (e) => { touchStart = e.touches[0].clientX; }, { passive: true });
+    container.addEventListener('touchend', (e) => {
+      const diff = touchStart - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) { e.preventDefault(); stopTimer(); diff > 0 ? next() : prev(); startTimer(); }
+    });
+    
+    // Afficher la première image
+    if (loaded[0] && loaded[0].url) {
+      element.style.backgroundImage = `url('${loaded[0].url}')`;
+      element.style.backgroundSize = 'cover';
+      element.style.backgroundPosition = 'center';
+      element.style.backgroundRepeat = 'no-repeat';
+    }
+    
+    startTimer();
+    
+    activeRotators.set(element, { stop: stopTimer, count: loaded.length });
+    console.log(`✅ Rotateur prêt: ${prefix} (${loaded.length} images)`);
+  };
+  
+  // Nettoyage
+  const cleanup = () => {
+    activeRotators.forEach(r => { if (r.stop) r.stop(); });
+    activeRotators.clear();
+  };
+  
+  return { init, cleanup };
 })();

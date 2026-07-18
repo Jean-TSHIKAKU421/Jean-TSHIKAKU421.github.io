@@ -9,9 +9,8 @@
     "location": "RDC, Lubumbashi",
     "avatar": "fa-solid fa-user-tie",
     "profileImages": {
-      "folder": "assets",
+      "category": "profil",
       "prefix": "profil",
-      "extension": "jpg",
       "count": 9,
       "changeInterval": 4000
     },
@@ -107,6 +106,11 @@
       "title": "Orientation",
       "description": "Plateforme web interactive pour aider les étudiants à choisir leur parcours académique en fonction de leurs intérêts et compétences.",
       "image": "fa-solid fa-compass",
+      "screenshots": {
+        "category": "orientation",
+        "prefix": "site_orientation",
+        "count": 11
+      },
       "technologies": ["Node.js", "MySQL", "Express.js"],
       "demoUrl": "https://demo-ecommerce.example.com",
       "githubUrl": "https://github.com/Jean-TSHIKAKU421/orientation.git",
@@ -117,6 +121,11 @@
       "title": "JTplay",
       "description": "Application web pour la recherche et la visualisation de films, intégrant des fonctionnalités de recommandation basées sur les préférences de l'utilisateur.",
       "image": "fa-solid fa-film",
+      "screenshots": {
+        "category": "jtplay",
+        "prefix": "site_jtplay",
+        "count": 10
+      },
       "technologies": ["Node.js", "MySQL", "Python"],
       "demoUrl": "https://jtplay.alwaysdata.net/",
       "githubUrl": "https://github.com/Jean-TSHIKAKU421/jtplay.git",
@@ -127,6 +136,11 @@
       "title": "Genot",
       "description": "Application WEB (et mobile) pour la centralisation des données concernant une matière dont les notes, les pdf, les liens et les audios",
       "image": "fa-solid fa-brain",
+      "screenshots": {
+        "category": "genot",
+        "prefix": "site_genot",
+        "count": 19
+      },
       "technologies": ["React", "Node.js", "MySQL"],
       "demoUrl": "https://jtt.alwaysdata.net/",
       "githubUrl": "https://github.com/Jean-TSHIKAKU421/genot.git",

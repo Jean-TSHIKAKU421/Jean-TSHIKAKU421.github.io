@@ -1,4 +1,4 @@
-// ==================== RENDERER DYNAMIQUE ====================
+// js/renderer.js - RENDERER DYNAMIQUE (adapté images optimisées)
 const Renderer = (() => {
     'use strict';
     
@@ -44,18 +44,15 @@ const Renderer = (() => {
             const actions = personalData.contactActions;
             if (!actions) return '';
             let buttons = '<div class="contact-buttons">';
-            if (actions.whatsapp && actions.whatsapp.enabled) {
+            if (actions.whatsapp?.enabled) {
                 const num = personalData.whatsapp.replace(/[\+\s\-\(\)]/g, '');
-                const msg = encodeURIComponent(actions.whatsapp.message || 'Bonjour !');
-                buttons += `<a href="https://wa.me/${num}?text=${msg}" class="contact-action-btn btn-whatsapp" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><span class="btn-icon"><i class="fa-brands fa-whatsapp"></i></span><span class="btn-text">${SecurityLayer.sanitize(actions.whatsapp.label)}</span></a>`;
+                buttons += `<a href="https://wa.me/${num}?text=${encodeURIComponent(actions.whatsapp.message || 'Bonjour !')}" class="contact-action-btn btn-whatsapp" target="_blank" rel="noopener noreferrer"><span class="btn-icon"><i class="fa-brands fa-whatsapp"></i></span><span class="btn-text">${SecurityLayer.sanitize(actions.whatsapp.label)}</span></a>`;
             }
-            if (actions.email && actions.email.enabled) {
-                const subj = encodeURIComponent(actions.email.subject || 'Contact');
-                buttons += `<a href="mailto:${personalData.email}?subject=${subj}" class="contact-action-btn btn-email" aria-label="Email"><span class="btn-icon"><i class="fa-solid fa-envelope"></i></span><span class="btn-text">${SecurityLayer.sanitize(actions.email.label)}</span></a>`;
+            if (actions.email?.enabled) {
+                buttons += `<a href="mailto:${personalData.email}?subject=${encodeURIComponent(actions.email.subject || 'Contact')}" class="contact-action-btn btn-email"><span class="btn-icon"><i class="fa-solid fa-envelope"></i></span><span class="btn-text">${SecurityLayer.sanitize(actions.email.label)}</span></a>`;
             }
-            if (actions.call && actions.call.enabled) {
-                const phone = personalData.phone.replace(/[\s\-\(\)]/g, '');
-                buttons += `<a href="tel:${phone}" class="contact-action-btn btn-call" aria-label="Appeler"><span class="btn-icon"><i class="fa-solid fa-phone"></i></span><span class="btn-text">${SecurityLayer.sanitize(actions.call.label)}</span></a>`;
+            if (actions.call?.enabled) {
+                buttons += `<a href="tel:${personalData.phone.replace(/[\s\-\(\)]/g, '')}" class="contact-action-btn btn-call"><span class="btn-icon"><i class="fa-solid fa-phone"></i></span><span class="btn-text">${SecurityLayer.sanitize(actions.call.label)}</span></a>`;
             }
             buttons += '</div>';
             return buttons;
@@ -63,8 +60,20 @@ const Renderer = (() => {
         
         container.innerHTML = `<div class="hero-content fade-in-up"><div class="hero-text"><h1>${SecurityLayer.sanitize(personalData.name)}</h1><span class="typed-text"><i class="fa-solid fa-terminal"></i> ${SecurityLayer.sanitize(personalData.title)}</span><p class="bio">${SecurityLayer.sanitize(personalData.bio)}</p><div class="cta-buttons"><a href="#projects" class="btn btn-primary"><i class="fa-solid fa-eye"></i> Voir mes projets</a><a href="#contact" class="btn btn-outline"><i class="fa-solid fa-paper-plane"></i> Me contacter</a></div>${createContactButtons()}</div><div class="hero-image"><div class="profile-image-wrapper"><div class="profile-image" style="background-image: none;"><i class="${personalData.avatar || 'fa-solid fa-user-tie'} profile-fallback-icon"></i></div></div></div></div>`;
         
+        // Initialiser le rotateur de profil avec images optimisées
         if (personalData.profileImages && personalData.profileImages.count > 0) {
-            setTimeout(() => { if (typeof ImageRotator !== 'undefined') ImageRotator.init(personalData.profileImages); }, 500);
+            setTimeout(() => {
+                const profileEl = document.querySelector('.profile-image');
+                if (profileEl && typeof ImageRotator !== 'undefined') {
+                    ImageRotator.init(profileEl, {
+                        category: personalData.profileImages.category || 'profil',
+                        prefix: personalData.profileImages.prefix || 'profil',
+                        count: personalData.profileImages.count,
+                        type: 'profile',
+                        interval: personalData.profileImages.changeInterval || 4000
+                    });
+                }
+            }, 500);
         }
     };
     
@@ -85,12 +94,24 @@ const Renderer = (() => {
         if (!container) return;
         container.innerHTML = `<h2 class="section-title fade-in-up"><i class="fa-solid fa-diagram-project"></i> Projets Récents</h2><div class="projects-grid">${projectsData.map((p, i) => `<div class="project-card fade-in-up ${p.featured ? 'featured' : ''}" style="animation-delay: ${i * 0.15}s" data-project-title="${SecurityLayer.sanitize(p.title)}"><div class="project-image-container"><div class="project-image-slider" style="background-image: none;"><span class="project-emoji"><i class="${p.image || 'fa-solid fa-folder'}"></i></span></div></div>${p.featured ? '<span class="featured-badge"><i class="fa-solid fa-star"></i> Featured</span>' : ''}<div class="project-info"><h3>${SecurityLayer.sanitize(p.title)}</h3><p>${SecurityLayer.sanitize(p.description)}</p><div class="project-tech">${p.technologies.map(t => `<span class="tech-tag">${SecurityLayer.sanitize(t)}</span>`).join('')}</div><div class="project-links">${p.demoUrl ? `<a href="${p.demoUrl}" class="project-link" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-globe"></i> Démo Live</a>` : ''}${p.githubUrl ? `<a href="${p.githubUrl}" class="project-link" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> Code Source</a>` : ''}</div></div></div>`).join('')}</div>`;
         
+        // Initialiser les rotateurs de projets avec images optimisées
         const cards = container.querySelectorAll('.project-card');
         cards.forEach((card, i) => {
             const title = card.getAttribute('data-project-title');
-            const data = projectsData.find(p => p.title === title);
-            if (data && typeof ProjectImageRotator !== 'undefined') {
-                setTimeout(() => ProjectImageRotator.init(card, data), 300 + (i * 300));
+            const projectData = projectsData.find(p => p.title === title);
+            if (projectData && projectData.screenshots && typeof ImageRotator !== 'undefined') {
+                setTimeout(() => {
+                    const slider = card.querySelector('.project-image-slider');
+                    if (slider) {
+                        ImageRotator.init(slider, {
+                            category: projectData.screenshots.category,
+                            prefix: projectData.screenshots.prefix,
+                            count: projectData.screenshots.count || 25,
+                            type: 'project',
+                            interval: 4000
+                        });
+                    }
+                }, 300 + (i * 300));
             }
         });
     };
@@ -115,9 +136,7 @@ const Renderer = (() => {
     const renderContact = (contactData, personalData) => {
         const container = document.getElementById('contact-content');
         if (!container) return;
-        
-        const socialLinksHtml = personalData.social.map(s => `<a href="${s.url}" class="social-link" target="_blank" rel="noopener noreferrer" title="${SecurityLayer.sanitize(s.platform)}" aria-label="${SecurityLayer.sanitize(s.platform)}"><i class="${s.icon}"></i></a>`).join('');
-        
+        const socialLinksHtml = personalData.social.map(s => `<a href="${s.url}" class="social-link" target="_blank" rel="noopener noreferrer" title="${SecurityLayer.sanitize(s.platform)}"><i class="${s.icon}"></i></a>`).join('');
         const createActionButtons = () => {
             const a = personalData.contactActions;
             if (!a) return '';
@@ -127,7 +146,6 @@ const Renderer = (() => {
             if (a.call?.enabled) b += `<a href="tel:${personalData.phone.replace(/[\s\-\(\)]/g, '')}" class="contact-action-btn btn-call"><span class="btn-icon"><i class="fa-solid fa-phone"></i></span><span class="btn-text">Appeler</span></a>`;
             return b + '</div>';
         };
-        
         container.innerHTML = `<h2 class="section-title fade-in-up"><i class="fa-solid fa-envelope"></i> Contact</h2><div class="contact-grid fade-in-up"><div class="contact-info"><h3><i class="fa-solid fa-comments"></i> Parlons de votre projet</h3><p>${SecurityLayer.sanitize(contactData.cta)}</p><div class="contact-details"><div class="contact-item"><div class="contact-icon"><i class="fa-solid fa-envelope"></i></div><span><a href="mailto:${personalData.email}" style="color:inherit;text-decoration:none;">${SecurityLayer.sanitize(personalData.email)}</a></span></div><div class="contact-item"><div class="contact-icon"><i class="fa-solid fa-phone"></i></div><span><a href="tel:${personalData.phone.replace(/[\s\-\(\)]/g, '')}" style="color:inherit;text-decoration:none;">${SecurityLayer.sanitize(personalData.phone)}</a></span></div><div class="contact-item"><div class="contact-icon"><i class="fa-solid fa-location-dot"></i></div><span>${SecurityLayer.sanitize(personalData.location)}</span></div></div><div class="social-links">${socialLinksHtml}</div>${createActionButtons()}</div><div class="contact-form-container"><form class="contact-form" id="contact-form"><input type="hidden" name="access_key" value="4a466fe5-0c54-47df-b410-e0540fa08a98"><input type="hidden" name="subject" value="Nouveau message depuis le Portfolio"><input type="hidden" name="from_name" value="Portfolio Contact"><input type="hidden" name="redirect" value="false"><input type="text" name="website_url_custom" style="display:none!important;" tabindex="-1" autocomplete="off">${contactData.formFields.map(f => `<div class="form-group"><label for="field-${f.name}"><i class="${f.icon || 'fa-solid fa-pencil'}"></i> ${SecurityLayer.sanitize(f.label)}</label>${f.type === 'textarea' ? `<textarea id="field-${f.name}" name="${f.name}" placeholder="Votre ${f.label.toLowerCase()}" ${f.required ? 'required' : ''} maxlength="1000"></textarea>` : `<input id="field-${f.name}" type="${f.type}" name="${f.name}" placeholder="Votre ${f.label.toLowerCase()}" ${f.required ? 'required' : ''} maxlength="${f.type === 'email' ? '254' : '200'}">`}</div>`).join('')}<button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Envoyer le message</button><p class="form-message" id="form-message" style="display:none;text-align:center;margin-top:1rem;"></p></form></div></div>`;
         
         const form = document.getElementById('contact-form');
@@ -141,48 +159,33 @@ const Renderer = (() => {
                 msg.className = 'form-message ' + type;
                 if (type === 'success') setTimeout(() => msg.style.display = 'none', 5000);
             };
-            
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const submitBtn = form.querySelector('button[type="submit"]');
                 const originalBtn = submitBtn.innerHTML;
-                
                 if (form.querySelector('input[name="website_url_custom"]').value) return;
                 if (!SecurityLayer.checkRateLimit()) { showMessage('⚠️ Trop de tentatives.', 'error'); return; }
-                
                 const fd = new FormData(form);
                 const name = fd.get('name')?.trim() || '';
                 const email = fd.get('email')?.trim() || '';
                 const subject = fd.get('subject')?.trim() || '';
                 const message = fd.get('message')?.trim() || '';
-                
                 if (!name || !email || !message) { showMessage('⚠️ Champs obligatoires manquants.', 'error'); return; }
                 if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showMessage('⚠️ Email invalide.', 'error'); return; }
                 if (SecurityLayer.detectXSS(name + email + subject + message)) { showMessage('⚠️ Contenu non autorisé.', 'error'); return; }
-                
                 submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Envoi...';
                 submitBtn.disabled = true;
-                
                 try {
                     form.querySelector('input[name="subject"]').value = `Portfolio : ${subject || 'Nouveau message'}`;
                     form.querySelector('input[name="from_name"]').value = name;
                     const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd });
                     const data = await res.json();
-                    if (data.success) {
-                        showMessage('✅ Message envoyé avec succès !', 'success');
-                        form.reset();
-                        form.querySelector('input[name="subject"]').value = 'Nouveau message depuis le Portfolio';
-                    } else throw new Error(data.message);
+                    if (data.success) { showMessage('✅ Message envoyé !', 'success'); form.reset(); }
+                    else throw new Error(data.message);
                 } catch (err) {
-                    console.error('❌', err);
                     showMessage('❌ Erreur. Ouverture du client mail...', 'error');
-                    setTimeout(() => {
-                        if (confirm('Ouvrir votre client mail ?')) window.location.href = `mailto:jtshikaku@gmail.com?subject=${encodeURIComponent(subject || 'Contact')}&body=${encodeURIComponent(`De : ${name} (${email})\n\n${message}`)}`;
-                    }, 500);
-                } finally {
-                    submitBtn.innerHTML = originalBtn;
-                    submitBtn.disabled = false;
-                }
+                    setTimeout(() => { if (confirm('Ouvrir votre client mail ?')) window.location.href = `mailto:jtshikaku@gmail.com?subject=${encodeURIComponent(subject || 'Contact')}&body=${encodeURIComponent(`De : ${name} (${email})\n\n${message}`)}`; }, 500);
+                } finally { submitBtn.innerHTML = originalBtn; submitBtn.disabled = false; }
             });
         }
     };
