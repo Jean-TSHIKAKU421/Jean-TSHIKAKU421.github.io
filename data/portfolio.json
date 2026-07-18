@@ -1,0 +1,183 @@
+{
+  "personal": {
+    "name": "Jean TSHIKAKU",
+    "title": "Développeur Logiciel & Web Junior",
+    "bio": "Passionné par la création d'expériences web innovantes et performantes. Je combine design créatif et expertise technique pour donner vie à vos projets digitaux.",
+    "email": "jtshikaku@gmail.com",
+    "phone": "+243832976093",
+    "whatsapp": "+243832976093",
+    "location": "RDC, Lubumbashi",
+    "avatar": "fa-solid fa-user-tie",
+    "profileImages": {
+      "folder": "assets",
+      "prefix": "profil",
+      "extension": "jpg",
+      "count": 9,
+      "changeInterval": 4000
+    },
+    "social": [
+      {
+        "platform": "GitHub",
+        "url": "https://github.com/Jean-TSHIKAKU421",
+        "icon": "fa-brands fa-github",
+        "username": "Jean TSHIKAKU TSHITOMBENU"
+      },
+      {
+        "platform": "LinkedIn",
+        "url": "https://www.linkedin.com/in/tshikaku-tshitombenu-jean-513540419/",
+        "icon": "fa-brands fa-linkedin-in",
+        "username": "TSHIKAKU TSHITOMBENU Jean"
+      },
+      {
+        "platform": "Twitter",
+        "url": "https://x.com/_Jean_TSHIKAKU",
+        "icon": "fa-brands fa-x-twitter",
+        "username": "TSHIKAKU TSHITOMBENU JEAN"
+      }
+    ],
+    "contactActions": {
+      "whatsapp": {
+        "enabled": true,
+        "message": "Bonjour Jean, je viens de consulter votre portfolio et je souhaiterais échanger avec vous.",
+        "label": "WhatsApp"
+      },
+      "email": {
+        "enabled": true,
+        "subject": "Contact depuis le portfolio",
+        "label": "Email"
+      },
+      "call": {
+        "enabled": true,
+        "label": "Appeler"
+      }
+    }
+  },
+  "navigation": [
+    { "label": "Accueil", "section": "home", "icon": "fa-solid fa-house" },
+    { "label": "À propos", "section": "about", "icon": "fa-solid fa-user" },
+    { "label": "Compétences", "section": "skills", "icon": "fa-solid fa-code" },
+    { "label": "Projets", "section": "projects", "icon": "fa-solid fa-diagram-project" },
+    { "label": "Expérience", "section": "experience", "icon": "fa-solid fa-briefcase" },
+    { "label": "Contact", "section": "contact", "icon": "fa-solid fa-envelope" }
+  ],
+  "about": {
+    "description": "Avec plus de 8 ans d'expérience dans le développement web, j'ai eu l'opportunité de travailler sur des projets variés allant des startups innovantes aux grandes entreprises. Ma passion pour la technologie et le design me pousse à rester constamment à jour avec les dernières tendances et technologies.",
+    "details": [
+      { "label": "Expérience", "value": "2 ans", "icon": "fa-solid fa-clock" },
+      { "label": "Projets", "value": "4", "icon": "fa-solid fa-laptop-code" },
+      { "label": "Clients", "value": "moins de 50", "icon": "fa-solid fa-users" },
+      { "label": "Technologies", "value": "~ 10", "icon": "fa-solid fa-microchip" }
+    ]
+  },
+  "skills": [
+    {
+      "category": "Frontend",
+      "icon": "fa-solid fa-paint-brush",
+      "technologies": [
+        "HTML5", "CSS3", "JavaScript (Débutant)", "TypeScript (Débutant)"
+      ]
+    },
+    {
+      "category": "Backend",
+      "icon": "fa-solid fa-server",
+      "technologies": [
+        "Node.js (Débutant)", "Python (Intermédiaire)", "Express.js (Débutant)", 
+        "Django (Débutant)", "RESTful APIs (Débutant)", "WebSocket (Débutant)",
+        "MySQL (Intermédiaire)"
+      ]
+    },
+    {
+      "category": "Design & Outils",
+      "icon": "fa-solid fa-palette",
+      "technologies": [
+        "Figma (Intermédiaire)", "Photoshop (Débutant)", "Responsive Design"
+      ]
+    },
+    {
+      "category": "DevOps & Cloud",
+      "icon": "fa-solid fa-cloud",
+      "technologies": [
+        "Git (Débutant)", "Linux (Débutant)", "Security Best Practices (Débutant)"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": 1,
+      "title": "Orientation",
+      "description": "Plateforme web interactive pour aider les étudiants à choisir leur parcours académique en fonction de leurs intérêts et compétences.",
+      "image": "fa-solid fa-compass",
+      "technologies": ["Node.js", "MySQL", "Express.js"],
+      "demoUrl": "https://demo-ecommerce.example.com",
+      "githubUrl": "https://github.com/Jean-TSHIKAKU421/orientation.git",
+      "featured": true
+    },
+    {
+      "id": 2,
+      "title": "JTplay",
+      "description": "Application web pour la recherche et la visualisation de films, intégrant des fonctionnalités de recommandation basées sur les préférences de l'utilisateur.",
+      "image": "fa-solid fa-film",
+      "technologies": ["Node.js", "MySQL", "Python"],
+      "demoUrl": "https://jtplay.alwaysdata.net/",
+      "githubUrl": "https://github.com/Jean-TSHIKAKU421/jtplay.git",
+      "featured": true
+    },
+    {
+      "id": 3,
+      "title": "Genot",
+      "description": "Application WEB (et mobile) pour la centralisation des données concernant une matière dont les notes, les pdf, les liens et les audios",
+      "image": "fa-solid fa-brain",
+      "technologies": ["React", "Node.js", "MySQL"],
+      "demoUrl": "https://jtt.alwaysdata.net/",
+      "githubUrl": "https://github.com/Jean-TSHIKAKU421/genot.git",
+      "featured": false
+    }
+  ],
+  "experience": [
+    {
+      "title": "Chef de Projet Technique",
+      "company": "UDBL",
+      "period": "Mai 2026 - Juin 2026",
+      "description": "Gestion d'une équipe de développeurs (collègues de promotion) pour la mise en place d'une plateforme de gestion académique.",
+      "type": "work",
+      "icon": "fa-solid fa-people-group"
+    },
+    {
+      "title": "Self projects : Développement d'un assistant vocal",
+      "company": "Projet personnel",
+      "period": "2025 - En cours",
+      "description": "Développement d'un assistant vocal intelligent utilisant la reconnaissance vocale et l'IA pour automatiser certaines tâches quotidiennes.",
+      "type": "work",
+      "icon": "fa-solid fa-microphone"
+    },
+    {
+      "title": "Etudiant en Informatique",
+      "company": "Université Don Bosco de Lubumbashi",
+      "period": "2024 - En cours",
+      "description": "Actuellement étudiant en informatique, je me spécialise dans le développement web et logiciel, avec un intérêt particulier pour les technologies émergentes et l'IA.",
+      "type": "education",
+      "icon": "fa-solid fa-graduation-cap"
+    },
+    {
+      "title": "Autodidacte en sécurité informatique",
+      "company": "Formation personnelle",
+      "period": "2025 - En cours",
+      "description": "Je me forme de manière autonome aux meilleures pratiques de sécurité informatique, en explorant les vulnérabilités, les tests d'intrusion et la protection des données.",
+      "type": "education",
+      "icon": "fa-solid fa-shield-halved"
+    }
+  ],
+  "contact": {
+    "cta": "Vous avez un projet en tête ? N'hésitez pas à me contacter pour en discuter !",
+    "formFields": [
+      { "name": "name", "label": "Nom complet", "type": "text", "required": true, "icon": "fa-solid fa-user-pen" },
+      { "name": "email", "label": "Email", "type": "email", "required": true, "icon": "fa-solid fa-at" },
+      { "name": "subject", "label": "Sujet", "type": "text", "required": true, "icon": "fa-solid fa-heading" },
+      { "name": "message", "label": "Message", "type": "textarea", "required": true, "icon": "fa-solid fa-message" }
+    ]
+  },
+  "footer": {
+    "copyright": "© 2024 Jean TSHIKAKU. Tous droits réservés.",
+    "message": "Développé avec ❤️ et sécurisé avec 🔒"
+  }
+}
