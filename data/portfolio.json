@@ -110,7 +110,7 @@
       "technologies": ["Node.js", "MySQL", "Express.js"],
       "demoUrl": "https://demo-ecommerce.example.com",
       "githubUrl": "https://github.com/Jean-TSHIKAKU421/orientation.git",
-      "featured": true
+      "featured": false
     },
     {
       "id": 2,
@@ -120,7 +120,7 @@
       "technologies": ["Node.js", "MySQL", "Python"],
       "demoUrl": "https://jtplay.alwaysdata.net/",
       "githubUrl": "https://github.com/Jean-TSHIKAKU421/jtplay.git",
-      "featured": true
+      "featured": false
     },
     {
       "id": 3,
