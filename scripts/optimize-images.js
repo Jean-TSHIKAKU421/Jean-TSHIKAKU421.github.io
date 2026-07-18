@@ -15,54 +15,92 @@ function ensureDirExists(dir) {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 }
 
+// Vérifier si l'image optimisée existe déjà et est plus récente que l'originale
+function needsOptimization(inputPath, outputPath) {
+  if (!fs.existsSync(outputPath)) return true; // N'existe pas → à créer
+  
+  const inputStat = fs.statSync(inputPath);
+  const outputStat = fs.statSync(outputPath);
+  
+  // Si l'originale a été modifiée après l'optimisée → réoptimiser
+  return inputStat.mtime > outputStat.mtime;
+}
+
 async function optimizeImage(inputPath, outputDir, fileName) {
   const nameWithoutExt = path.parse(fileName).name;
-  let totalSaved = 0;
+  let optimized = false;
+  
   for (const [sizeName, width] of Object.entries(CONFIG.sizes)) {
     const outputFileName = `${nameWithoutExt}-${sizeName}.webp`;
     const outputPath = path.join(outputDir, outputFileName);
+    
+    if (!needsOptimization(inputPath, outputPath)) continue; // Déjà à jour
+    
     try {
-      const originalSize = fs.statSync(inputPath).size;
-      await sharp(inputPath).resize(width, null, { withoutEnlargement: true, fit: 'inside' }).webp({ quality: CONFIG.quality }).toFile(outputPath);
-      const optimizedSize = fs.statSync(outputPath).size;
-      totalSaved += originalSize - optimizedSize;
-      console.log(`  ✅ ${outputFileName} (${(optimizedSize/1024).toFixed(1)} Ko)`);
+      await sharp(inputPath)
+        .resize(width, null, { withoutEnlargement: true, fit: 'inside' })
+        .webp({ quality: CONFIG.quality })
+        .toFile(outputPath);
+      
+      const sizeKB = (fs.statSync(outputPath).size / 1024).toFixed(1);
+      console.log(`  ✅ ${outputFileName} (${sizeKB} Ko)`);
+      optimized = true;
     } catch (error) {
       console.error(`  ❌ ${outputFileName}: ${error.message}`);
     }
   }
-  return totalSaved;
+  
+  return optimized;
 }
 
 async function processDirectory(dir, relativePath = '') {
   const items = fs.readdirSync(dir, { withFileTypes: true });
-  let totalSaved = 0;
+  let count = 0;
+  
   for (const item of items) {
     const fullPath = path.join(dir, item.name);
     const relPath = path.join(relativePath, item.name);
+    
     if (item.isDirectory()) {
-      totalSaved += await processDirectory(fullPath, relPath);
+      count += await processDirectory(fullPath, relPath);
     } else if (/\.(jpg|jpeg|png|webp)$/i.test(item.name)) {
       const outDir = path.join(CONFIG.outputDir, relativePath);
       ensureDirExists(outDir);
-      console.log(`🖼️  ${relPath}`);
-      totalSaved += await optimizeImage(fullPath, outDir, item.name);
+      
+      // Vérifier si au moins une taille manque
+      const nameWithoutExt = path.parse(item.name).name;
+      const firstOutput = path.join(outDir, `${nameWithoutExt}-medium.webp`);
+      
+      if (needsOptimization(fullPath, firstOutput)) {
+        console.log(`🖼️  ${relPath}`);
+        const optimized = await optimizeImage(fullPath, outDir, item.name);
+        if (optimized) count++;
+      }
     }
   }
-  return totalSaved;
+  
+  return count;
 }
 
 async function main() {
   console.log('🚀 Optimisation des images...\n');
+  
   if (!fs.existsSync(CONFIG.inputDir)) {
     console.error(`❌ Dossier introuvable : ${CONFIG.inputDir}`);
-    console.log('Structure attendue : assets/images/originals/{profil,genot,jtplay,orientation}/');
     process.exit(1);
   }
+  
   ensureDirExists(CONFIG.outputDir);
+  
   const start = Date.now();
-  const saved = await processDirectory(CONFIG.inputDir);
-  console.log(`\n✨ Terminé en ${((Date.now()-start)/1000).toFixed(1)}s - Économisé : ${(saved/1024/1024).toFixed(2)} Mo`);
+  const count = await processDirectory(CONFIG.inputDir);
+  const elapsed = ((Date.now() - start) / 1000).toFixed(1);
+  
+  if (count === 0) {
+    console.log('✅ Toutes les images sont déjà optimisées.\n');
+  } else {
+    console.log(`\n✨ ${count} image(s) optimisée(s) en ${elapsed}s\n`);
+  }
 }
 
 main().catch(err => { console.error('❌', err); process.exit(1); });
