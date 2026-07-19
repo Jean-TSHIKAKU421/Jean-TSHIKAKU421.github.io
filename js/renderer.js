@@ -88,6 +88,48 @@ const Renderer = (() => {
         container.innerHTML = `<h2 class="section-title fade-in-up"><i class="fa-solid fa-user"></i> À propos</h2><div class="about-content fade-in-up"><div class="about-details"><p>${SecurityLayer.sanitize(aboutData.description)}</p><div class="info-grid">${aboutData.details.map(d => `<div class="info-item"><div class="info-label"><i class="${d.icon || 'fa-solid fa-circle-info'}"></i> ${SecurityLayer.sanitize(d.label)}</div><div class="info-value">${SecurityLayer.sanitize(d.value)}</div></div>`).join('')}</div></div><div class="about-stats"><div class="stat-card"><div class="stat-number"><i class="fa-solid fa-laptop-code"></i></div><div class="stat-label">${SecurityLayer.sanitize(personalData.title.split('&')[0].trim())}</div></div><div class="stat-card"><div class="stat-number"><i class="fa-solid fa-location-dot"></i></div><div class="stat-label">${SecurityLayer.sanitize(personalData.location)}</div></div></div></div>`;
     };
     
+    const renderBiography = (biographyData) => {
+        const container = document.getElementById('bio-content');
+        if (!container) return;
+        
+        container.innerHTML = `
+            <h2 class="section-title fade-in-up"><i class="${biographyData.icon || 'fa-solid fa-book-open'}"></i> ${SecurityLayer.sanitize(biographyData.title)}</h2>
+            <div class="bio-wrapper fade-in-up">
+                <div class="bio-intro">
+                    <p>${SecurityLayer.sanitize(biographyData.intro)}</p>
+                </div>
+                <div class="bio-highlights">
+                    ${biographyData.highlights.map(h => `
+                        <div class="bio-highlight-item">
+                            <i class="${h.icon}"></i>
+                            <span>${SecurityLayer.sanitize(h.text)}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="bio-full" id="bio-full" style="display:none;">
+                    ${biographyData.fullText.split('\n\n').map(p => `<p>${SecurityLayer.sanitize(p)}</p>`).join('')}
+                </div>
+                <button class="btn btn-outline bio-toggle" id="bio-toggle">
+                    <i class="fa-solid fa-chevron-down"></i> Lire la suite
+                </button>
+            </div>
+        `;
+        
+        // Gestionnaire clic "Voir plus"
+        const toggleBtn = document.getElementById('bio-toggle');
+        const bioFull = document.getElementById('bio-full');
+        
+        if (toggleBtn && bioFull) {
+            toggleBtn.addEventListener('click', () => {
+                const isHidden = bioFull.style.display === 'none';
+                bioFull.style.display = isHidden ? 'block' : 'none';
+                toggleBtn.innerHTML = isHidden 
+                    ? '<i class="fa-solid fa-chevron-up"></i> Réduire' 
+                    : '<i class="fa-solid fa-chevron-down"></i> Lire la suite';
+            });
+        }
+    };
+
     const renderSkills = (skillsData) => {
         const container = document.getElementById('skills-content');
         if (!container) return;
@@ -208,6 +250,7 @@ const Renderer = (() => {
             renderNavigation(data.navigation);
             renderHero(data.personal);
             renderAbout(data.about, data.personal);
+            renderBiography(data.biography);
             renderSkills(data.skills);
             renderProjects(data.projects);
             renderExperience(data.experience);

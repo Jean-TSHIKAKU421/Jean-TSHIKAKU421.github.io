@@ -70,6 +70,18 @@
       { "label": "Technologies", "value": "~ 10", "icon": "fa-solid fa-microchip" }
     ]
   },
+    "biography": {
+      "title": "Mon Histoire",
+      "icon": "fa-solid fa-book-open",
+      "intro": "Développeur passionné originaire de Lubumbashi, j'ai découvert l'informatique très jeune...",
+      "fullText": "Développeur passionné originaire de Lubumbashi, j'ai découvert l'informatique très jeune en bricolant sur le vieil ordinateur familial. Ce qui n'était qu'un jeu est rapidement devenu une vocation.\n\nAu fil des années, j'ai exploré différents langages et technologies, de Python à JavaScript en passant par les bases de données. Chaque projet est pour moi l'occasion d'apprendre et de me dépasser.\n\nAujourd'hui étudiant à l'Université Don Bosco de Lubumbashi, je combine théorie académique et projets concrets pour développer mes compétences. Mon objectif : créer des solutions qui ont un impact réel sur la vie des utilisateurs.\n\nQuand je ne code pas, vous me trouverez probablement en train d'explorer les dernières tendances tech, de contribuer à des projets open source, ou de partager mes connaissances avec la communauté.",
+      "highlights": [
+          { "icon": "fa-solid fa-laptop", "text": "Découverte de l'informatique à 12 ans" },
+          { "icon": "fa-solid fa-graduation-cap", "text": "Étudiant à l'Université Don Bosco" },
+          { "icon": "fa-solid fa-code", "text": "Passionné par le développement web et l'IA" },
+          { "icon": "fa-solid fa-users", "text": "Contributeur open source actif" }
+      ]
+  },
   "skills": [
     {
       "category": "Frontend",
