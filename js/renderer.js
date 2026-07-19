@@ -19,6 +19,11 @@ const Renderer = (() => {
         return element;
     };
     
+    // Helper : convertir un titre en slug
+    const titleToSlug = (title) => {
+        return title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+    };
+    
     const renderNavigation = (navigationData) => {
         const navMenu = document.getElementById('nav-menu');
         if (!navMenu) return;
@@ -60,14 +65,14 @@ const Renderer = (() => {
         
         container.innerHTML = `<div class="hero-content fade-in-up"><div class="hero-text"><h1>${SecurityLayer.sanitize(personalData.name)}</h1><span class="typed-text"><i class="fa-solid fa-terminal"></i> ${SecurityLayer.sanitize(personalData.title)}</span><p class="bio">${SecurityLayer.sanitize(personalData.bio)}</p><div class="cta-buttons"><a href="#projects" class="btn btn-primary"><i class="fa-solid fa-eye"></i> Voir mes projets</a><a href="#contact" class="btn btn-outline"><i class="fa-solid fa-paper-plane"></i> Me contacter</a></div>${createContactButtons()}</div><div class="hero-image"><div class="profile-image-wrapper"><div class="profile-image" style="background-image: none;"><i class="${personalData.avatar || 'fa-solid fa-user-tie'} profile-fallback-icon"></i></div></div></div></div>`;
         
-        // Initialiser le rotateur de profil avec images optimisées
+        // ✅ CORRECTION : Initialiser le rotateur de profil
         if (personalData.profileImages && personalData.profileImages.count > 0) {
             setTimeout(() => {
                 const profileEl = document.querySelector('.profile-image');
                 if (profileEl && typeof ImageRotator !== 'undefined') {
                     ImageRotator.init(profileEl, {
-                        category: personalData.profileImages.category || 'profil',
-                        prefix: personalData.profileImages.prefix || 'profil',
+                        category: 'profil',                                    // dossier : assets/images/optimized/profil/
+                        prefix: personalData.profileImages.prefix || 'profil', // fichier : profil1-large.webp
                         count: personalData.profileImages.count,
                         type: 'profile',
                         interval: personalData.profileImages.changeInterval || 4000
@@ -94,19 +99,20 @@ const Renderer = (() => {
         if (!container) return;
         container.innerHTML = `<h2 class="section-title fade-in-up"><i class="fa-solid fa-diagram-project"></i> Projets Récents</h2><div class="projects-grid">${projectsData.map((p, i) => `<div class="project-card fade-in-up ${p.featured ? 'featured' : ''}" style="animation-delay: ${i * 0.15}s" data-project-title="${SecurityLayer.sanitize(p.title)}"><div class="project-image-container"><div class="project-image-slider" style="background-image: none;"><span class="project-emoji"><i class="${p.image || 'fa-solid fa-folder'}"></i></span></div></div>${p.featured ? '<span class="featured-badge"><i class="fa-solid fa-star"></i> Featured</span>' : ''}<div class="project-info"><h3>${SecurityLayer.sanitize(p.title)}</h3><p>${SecurityLayer.sanitize(p.description)}</p><div class="project-tech">${p.technologies.map(t => `<span class="tech-tag">${SecurityLayer.sanitize(t)}</span>`).join('')}</div><div class="project-links">${p.demoUrl ? `<a href="${p.demoUrl}" class="project-link" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-globe"></i> Démo Live</a>` : ''}${p.githubUrl ? `<a href="${p.githubUrl}" class="project-link" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> Code Source</a>` : ''}</div></div></div>`).join('')}</div>`;
         
-        // Initialiser les rotateurs de projets avec images optimisées
+        // ✅ CORRECTION : Initialiser les rotateurs de projets
         const cards = container.querySelectorAll('.project-card');
         cards.forEach((card, i) => {
             const title = card.getAttribute('data-project-title');
             const projectData = projectsData.find(p => p.title === title);
-            if (projectData && projectData.screenshots && typeof ImageRotator !== 'undefined') {
+            if (projectData && typeof ImageRotator !== 'undefined') {
                 setTimeout(() => {
                     const slider = card.querySelector('.project-image-slider');
                     if (slider) {
+                        const slug = titleToSlug(title);
                         ImageRotator.init(slider, {
-                            category: projectData.screenshots.category,
-                            prefix: projectData.screenshots.prefix,
-                            count: projectData.screenshots.count || 25,
+                            category: slug,              // dossier : assets/images/optimized/orientation/
+                            prefix: 'site_' + slug,      // fichier : site_orientation_1-large.webp
+                            count: 25,
                             type: 'project',
                             interval: 4000
                         });

@@ -5,46 +5,72 @@ const ImageHelper = (() => {
   const BASE = 'assets/images/optimized';
   
   /**
-   * Retourne l'URL de l'image optimisée (taille medium par défaut)
-   * @param {string} category - 'profil', 'genot', 'jtplay', 'orientation'
-   * @param {string} prefix - 'profil', 'site_genot', 'site_jtplay', 'site_orientation'
-   * @param {number} index - numéro de l'image
-   * @param {string} size - 'thumbnail', 'medium', 'large'
-   * @returns {string} URL
+   * Détecte la taille d'image à utiliser selon l'écran
    */
-  const getUrl = (category, prefix, index, size = 'medium') => {
-    return `${BASE}/${category}/${prefix}_${index}-${size}.webp`;
+  const getSize = () => {
+    const width = window.innerWidth;
+    if (width <= 480) return 'thumbnail';
+    if (width <= 1024) return 'medium';
+    return 'large';
   };
   
   /**
-   * Vérifie si une image optimisée existe (pour fallback)
+   * Retourne l'URL de l'image optimisée
+   * @param {string} category - 'profil', 'genot', 'jtplay', 'orientation'
+   * @param {string} prefix - 'profil', 'site_genot', 'site_jtplay', 'site_orientation'
+   * @param {number} index - numéro de l'image
+   * @returns {string} URL
+   */
+  const getUrl = (category, prefix, index) => {
+    const size = getSize();
+    // Exemple: assets/images/optimized/profil/profil1-large.webp
+    // Exemple: assets/images/optimized/genot/site_genot_1-large.webp
+    return `${BASE}/${category}/${prefix}${index}-${size}.webp`;
+  };
+  
+  /**
+   * Vérifie si une image existe
    */
   const exists = (url) => {
     return new Promise((resolve) => {
       const img = new Image();
-      const timeout = setTimeout(() => { resolve(false); }, 2000);
-      img.onload = () => { clearTimeout(timeout); resolve(true); };
-      img.onerror = () => { clearTimeout(timeout); resolve(false); };
+      let resolved = false;
+      const timeout = setTimeout(() => { 
+        if (!resolved) { resolved = true; resolve(false); }
+      }, 2000);
+      img.onload = () => { 
+        if (!resolved) { resolved = true; clearTimeout(timeout); resolve(true); }
+      };
+      img.onerror = () => { 
+        if (!resolved) { resolved = true; clearTimeout(timeout); resolve(false); }
+      };
       img.src = url;
     });
   };
   
   /**
-   * Détecte les images disponibles dans une catégorie
+   * Détecte les images disponibles
    */
   const detectImages = async (category, prefix, maxCount = 25) => {
     const images = [];
+    
+    console.log(`🔍 Détection: cat="${category}", prefix="${prefix}"`);
+    
     for (let i = 1; i <= maxCount; i++) {
       const url = getUrl(category, prefix, i);
       const found = await exists(url);
+      
       if (found) {
+        console.log(`  ✅ ${url}`);
         images.push({ index: i, url, category, prefix });
       } else if (images.length > 0 && i > images.length + 3) {
         break;
       }
     }
+    
+    console.log(`📸 ${images.length} images trouvées pour "${prefix}"`);
     return images;
   };
   
-  return { getUrl, exists, detectImages, BASE };
+  return { getUrl, exists, detectImages, BASE, getSize };
 })();
