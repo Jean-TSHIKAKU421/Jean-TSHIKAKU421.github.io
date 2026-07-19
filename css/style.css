@@ -129,7 +129,7 @@ section{min-height:100vh;padding:100px 0;position:relative;overflow:hidden}
 .bio-full p {margin-bottom: 1.2rem;}
 .bio-toggle {display: inline-flex;margin-top: 1.5rem;cursor: pointer;}
 .bio-toggle i {transition: transform 0.3s;}
-.bio-full > p:first-child::first-letter {font-size: 5rem;font-weight: 700;float: left;line-height: 0.8;margin-right: 5px;margin-top: -10px;color: var(--primary);font-family: 'Space Grotesk', monospace;}
+.bio-full > p:first-child::first-letter {font-size: 5rem;font-weight: 700;float: left;line-height: 0.8;margin-right: 5px;margin-top: -10px;color: var(--light);font-family: 'Space Grotesk', monospace;}
 @media (max-width: 768px) {.bio-highlights {grid-template-columns: 1fr;}}
 
 /* ==================== SKILLS ==================== */
