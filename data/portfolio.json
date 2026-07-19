@@ -56,6 +56,7 @@
   "navigation": [
     { "label": "Accueil", "section": "home", "icon": "fa-solid fa-house" },
     { "label": "À propos", "section": "about", "icon": "fa-solid fa-user" },
+    { "label": "Biographie", "section": "bio", "icon": "fa-solid fa-book-open" },
     { "label": "Compétences", "section": "skills", "icon": "fa-solid fa-code" },
     { "label": "Projets", "section": "projects", "icon": "fa-solid fa-diagram-project" },
     { "label": "Expérience", "section": "experience", "icon": "fa-solid fa-briefcase" },
