@@ -54,13 +54,13 @@
     }
   },
   "navigation": [
-    { "label": "Accueil", "section": "home", "icon": "fa-solid fa-house" },
+    { "label": "Accueil", "section": "home", "icon": "fa-solid fa-house-chimney-user" },
     { "label": "À propos", "section": "about", "icon": "fa-solid fa-user" },
-    { "label": "Biographie", "section": "bio", "icon": "fa-solid fa-book-open" },
+    { "label": "Biographie", "section": "bio", "icon": "fa-solid fa-book" },
     { "label": "Compétences", "section": "skills", "icon": "fa-solid fa-code" },
     { "label": "Projets", "section": "projects", "icon": "fa-solid fa-diagram-project" },
     { "label": "Expérience", "section": "experience", "icon": "fa-solid fa-briefcase" },
-    { "label": "Contact", "section": "contact", "icon": "fa-solid fa-envelope" }
+    { "label": "Contact", "section": "contact", "icon": "fa-solid fa-id-card" }
   ],
   "about": {
     "description": "Avec plus de 2 ans d'expérience dans l'apprentissage logiciel et web et environs 6 mois dans le développement de mes compétences, j'ai l'ambition de travailler sur des petits projets variés allant des startups innovantes aux grands projets de grandes entreprises. Ma passion pour la technologie et le design me pousse à rester constamment à jour avec les dernières tendances et technologies.",
