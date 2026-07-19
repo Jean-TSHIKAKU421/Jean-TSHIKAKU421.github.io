@@ -108,10 +108,10 @@ const Renderer = (() => {
                 setTimeout(() => {
                     const slider = card.querySelector('.project-image-slider');
                     if (slider) {
-                        const slug = titleToSlug(title);
+                        const slug = titleToSlug(title);  // "Orientation" → "orientation"
                         ImageRotator.init(slider, {
-                            category: slug,              // dossier : assets/images/optimized/orientation/
-                            prefix: 'site_' + slug,      // fichier : site_orientation_1-large.webp
+                            category: slug,          // → "orientation" (nom du dossier)
+                            prefix: 'site_' + slug,  // → "site_orientation" (préfixe du fichier)
                             count: 25,
                             type: 'project',
                             interval: 4000
