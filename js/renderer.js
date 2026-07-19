@@ -95,10 +95,10 @@ const Renderer = (() => {
         container.innerHTML = `
             <h2 class="section-title fade-in-up"><i class="${biographyData.icon || 'fa-solid fa-book-open'}"></i> ${SecurityLayer.sanitize(biographyData.title)}</h2>
             <div class="bio-wrapper fade-in-up">
-                <div class="bio-intro">
+                <div class="bio-intro" id="bio-intro">
                     <p>${SecurityLayer.sanitize(biographyData.intro)}</p>
                 </div>
-                <div class="bio-highlights">
+                <div class="bio-highlights" id="bio-highlights">
                     ${biographyData.highlights.map(h => `
                         <div class="bio-highlight-item">
                             <i class="${h.icon}"></i>
@@ -118,18 +118,29 @@ const Renderer = (() => {
         // Gestionnaire clic "Voir plus"
         const toggleBtn = document.getElementById('bio-toggle');
         const bioFull = document.getElementById('bio-full');
+        const bioIntro = document.getElementById('bio-intro');
+        const bioHighlights = document.getElementById('bio-highlights');
         
         if (toggleBtn && bioFull) {
             toggleBtn.addEventListener('click', () => {
                 const isHidden = bioFull.style.display === 'none';
-                bioFull.style.display = isHidden ? 'block' : 'none';
-                toggleBtn.innerHTML = isHidden 
-                    ? '<i class="fa-solid fa-chevron-up"></i> Réduire' 
-                    : '<i class="fa-solid fa-chevron-down"></i> Lire la suite';
+                
+                if (isHidden) {
+                    // Déplier : cacher l'intro et les highlights, montrer le texte complet
+                    bioIntro.style.display = 'none';
+                    bioHighlights.style.display = 'none';
+                    bioFull.style.display = 'block';
+                    toggleBtn.innerHTML = '<i class="fa-solid fa-chevron-up"></i> Réduire';
+                } else {
+                    // Replier : montrer l'intro et les highlights, cacher le texte complet
+                    bioIntro.style.display = 'block';
+                    bioHighlights.style.display = 'grid';
+                    bioFull.style.display = 'none';
+                    toggleBtn.innerHTML = '<i class="fa-solid fa-chevron-down"></i> Lire la suite';
+                }
             });
         }
     };
-
     const renderSkills = (skillsData) => {
         const container = document.getElementById('skills-content');
         if (!container) return;
