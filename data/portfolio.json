@@ -11,6 +11,8 @@
     "profileImages": {
       "category": "profil",
       "prefix": "profil",
+      "folder": "assets",
+      "extension": "webp",
       "count": 10,
       "changeInterval": 4000
     },
@@ -109,6 +111,8 @@
       "screenshots": {
         "category": "orientation",
         "prefix": "site_orientation",
+        "folder": "assets",
+        "extension": "webp",
         "count": 11
       },
       "technologies": ["Node.js", "MySQL", "Express.js"],
@@ -124,6 +128,8 @@
       "screenshots": {
         "category": "jtplay",
         "prefix": "site_jtplay",
+        "folder": "assets",
+        "extension": "webp",
         "count": 10
       },
       "technologies": ["Node.js", "MySQL", "Python"],
@@ -139,6 +145,8 @@
       "screenshots": {
         "category": "genot",
         "prefix": "site_genot",
+        "folder": "assets",
+        "extension": "webp",
         "count": 19
       },
       "technologies": ["React", "Node.js", "MySQL"],
