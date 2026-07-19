@@ -120,12 +120,12 @@ section{min-height:100vh;padding:100px 0;position:relative;overflow:hidden}
 /* ==================== BIOGRAPHIE ==================== */
 .bio-section {background: var(--darker);padding: 80px 0;}
 .bio-wrapper {max-width: 800px;margin: 0 auto;}
-.bio-intro {font-size: 1.1rem;color: var(--gray-300);line-height: 1.8;margin-bottom: 2rem;}
+.bio-intro {font-size: 1.1rem;color: var(--gray-300);line-height: 1.8;margin-bottom: 2rem;text-align: justify;}
 .bio-highlights {display: grid;grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));gap: 1rem;margin-bottom: 2rem;}
 .bio-highlight-item {display: flex;align-items: center;gap: 1rem;padding: 1rem 1.5rem;background: var(--glass-bg);backdrop-filter: var(--glass-blur);border: 1px solid var(--glass-border);border-radius: var(--border-radius);color: var(--gray-300);transition: var(--transition);}
 .bio-highlight-item:hover {border-color: var(--primary);transform: translateY(-3px);}
 .bio-highlight-item i {color: var(--primary);font-size: 1.2rem;}
-.bio-full {margin-top: 1.5rem;color: var(--gray-400);line-height: 1.8;animation: fadeInUp 0.4s ease-out;}
+.bio-full {margin-top: 1.5rem;color: var(--gray-400);line-height: 1.8;animation: fadeInUp 0.4s ease-out;text-align: justify;}
 .bio-full p {margin-bottom: 1.2rem;}
 .bio-toggle {display: inline-flex;margin-top: 1.5rem;cursor: pointer;}
 .bio-toggle i {transition: transform 0.3s;}
@@ -148,7 +148,7 @@ section{min-height:100vh;padding:100px 0;position:relative;overflow:hidden}
 .skill-tag:hover::before{left:100%}
 .skill-tag:hover{background:var(--gradient-2);border-color:transparent;color:var(--light);transform:translateY(-3px);box-shadow:0 5px 15px rgba(108,99,255,.3)}
 
-/* ==================== PROJECTS - IMAGES LARGES ET ATTRACTIVES ==================== */
+/* ==================== PROJECTS ==================== */
 .projects-grid{display:flex;flex-direction:column;gap:3rem;max-width:1000px;margin:0 auto}
 .project-card{background:var(--glass-bg);backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:20px;overflow:hidden;transition:all .4s;cursor:pointer;position:relative;display:grid;grid-template-columns:1.4fr 1fr;min-height:420px}
 .project-card.featured{border-color:rgba(108,99,255,.3);box-shadow:0 0 30px rgba(108,99,255,.1)}
