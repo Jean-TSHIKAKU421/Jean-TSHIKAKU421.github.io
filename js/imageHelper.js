@@ -4,6 +4,9 @@ const ImageHelper = (() => {
   
   const BASE = 'assets/images/optimized';
   
+  /**
+   * Détecte la taille d'image à utiliser selon l'écran
+   */
   const getSize = () => {
     const width = window.innerWidth;
     if (width <= 480) return 'thumbnail';
@@ -11,13 +14,23 @@ const ImageHelper = (() => {
     return 'large';
   };
   
+  /**
+   * Retourne l'URL de l'image optimisée
+   * @param {string} category - 'profil', 'genot', 'jtplay', 'orientation'
+   * @param {string} prefix - 'profil', 'site_genot', 'site_jtplay', 'site_orientation'
+   * @param {number} index - numéro de l'image
+   * @returns {string} URL
+   */
   const getUrl = (category, prefix, index) => {
     const size = getSize();
-    // Pour profil :    assets/images/optimized/profil/profil1-large.webp
-    // Pour orientation: assets/images/optimized/orientation/site_orientation_1-large.webp
-    return `${BASE}/${category}/${prefix}${index}-${size}.webp`;
+    // Exemple: assets/images/optimized/profil/profil1-large.webp
+    // Exemple: assets/images/optimized/genot/site_genot_1-large.webp
+    return `${BASE}/${category}/${prefix}_${index}-${size}.webp`;
   };
   
+  /**
+   * Vérifie si une image existe
+   */
   const exists = (url) => {
     return new Promise((resolve) => {
       const img = new Image();
@@ -35,13 +48,18 @@ const ImageHelper = (() => {
     });
   };
   
+  /**
+   * Détecte les images disponibles
+   */
   const detectImages = async (category, prefix, maxCount = 25) => {
     const images = [];
+    
     console.log(`🔍 Détection: cat="${category}", prefix="${prefix}"`);
     
     for (let i = 1; i <= maxCount; i++) {
       const url = getUrl(category, prefix, i);
       const found = await exists(url);
+      
       if (found) {
         console.log(`  ✅ ${url}`);
         images.push({ index: i, url, category, prefix });
