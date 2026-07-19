@@ -121,7 +121,7 @@ section{min-height:100vh;padding:100px 0;position:relative;overflow:hidden}
 .bio-section {background: var(--darker);padding: 80px 0;}
 .bio-wrapper {max-width: 800px;margin: 0 auto;}
 .bio-intro {font-size: 1.1rem;color: var(--gray-300);line-height: 1.8;margin-bottom: 2rem;text-align: justify;}
-.bio-highlights {display: grid;grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));gap: 1rem;margin-bottom: 2rem;}
+.bio-highlights {display: grid;grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));gap: 1rem;margin-bottom: 2rem;text-align: left;}
 .bio-highlight-item {display: flex;align-items: center;gap: 1rem;padding: 1rem 1.5rem;background: var(--glass-bg);backdrop-filter: var(--glass-blur);border: 1px solid var(--glass-border);border-radius: var(--border-radius);color: var(--gray-300);transition: var(--transition);}
 .bio-highlight-item:hover {border-color: var(--primary);transform: translateY(-3px);}
 .bio-highlight-item i {color: var(--primary);font-size: 1.2rem;}
