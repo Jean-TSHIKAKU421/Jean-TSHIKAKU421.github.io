@@ -72,7 +72,7 @@ const Renderer = (() => {
                 if (profileEl && typeof ImageRotator !== 'undefined') {
                     ImageRotator.init(profileEl, {
                         category: 'profil',                                    // dossier : assets/images/optimized/profil/
-                        prefix: personalData.profileImages.prefix || 'site_profil', // fichier : profil1-large.webp
+                        prefix: personalData.profileImages.prefix || 'profil', // fichier : profil1-large.webp
                         count: personalData.profileImages.count,
                         type: 'profile',
                         interval: personalData.profileImages.changeInterval || 4000
