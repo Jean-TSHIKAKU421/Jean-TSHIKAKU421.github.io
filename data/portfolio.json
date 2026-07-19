@@ -62,9 +62,9 @@
     { "label": "Contact", "section": "contact", "icon": "fa-solid fa-envelope" }
   ],
   "about": {
-    "description": "Avec plus de 2 ans d'expérience dans le développement web, j'ai eu l'opportunité de travailler sur des petits projets variés allant des startups innovantes aux grandes entreprises. Ma passion pour la technologie et le design me pousse à rester constamment à jour avec les dernières tendances et technologies.",
+    "description": "Avec plus de 2 ans d'expérience dans l'apprentissage logiciel et web et environs 6 mois dans le développement de mes compétences, j'ai l'ambition de travailler sur des petits projets variés allant des startups innovantes aux grands projets de grandes entreprises. Ma passion pour la technologie et le design me pousse à rester constamment à jour avec les dernières tendances et technologies.",
     "details": [
-      { "label": "Expérience", "value": "2 ans", "icon": "fa-solid fa-clock" },
+      { "label": "Expérience", "value": "6 mois", "icon": "fa-solid fa-clock" },
       { "label": "Projets", "value": "4", "icon": "fa-solid fa-laptop-code" },
       { "label": "Clients", "value": "moins de 50", "icon": "fa-solid fa-users" },
       { "label": "Technologies", "value": "~ 10", "icon": "fa-solid fa-microchip" }
